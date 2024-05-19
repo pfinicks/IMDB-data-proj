@@ -1,0 +1,24 @@
+{
+	"name": "customEventTrigger",
+	"properties": {
+		"annotations": [],
+		"runtimeState": "Started",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "IMDB_data_transform",
+					"type": "PipelineReference"
+				}
+			}
+		],
+		"type": "CustomEventsTrigger",
+		"typeProperties": {
+			"subjectEndsWith": "",
+			"subjectBeginsWith": "",
+			"scope": "/subscriptions/5138f9ef-4e00-425f-a78f-bbba8bad5c22/resourceGroups/pfinicks_de_rg/providers/Microsoft.EventGrid/topics/pfinicks",
+			"events": [
+				"pipelineCompleted"
+			]
+		}
+	}
+}

@@ -1,0 +1,15 @@
+{
+	"name": "pfinicks-df",
+	"location": "westeurope",
+	"identity": {
+		"type": "SystemAssigned,UserAssigned",
+		"principalId": "544ae506-a2ca-4154-b1df-4dd5fcfdc86d",
+		"tenantId": "c9db6aa8-5249-48de-b2c2-6e29e9dab1cc",
+		"userAssignedIdentities": {
+			"/subscriptions/5138f9ef-4e00-425f-a78f-bbba8bad5c22/resourcegroups/Main/providers/Microsoft.ManagedIdentity/userAssignedIdentities/myUserAssignedMSI": {
+				"clientId": "406a4c45-85c1-4fda-8b53-7a2a02ea9dc9",
+				"principalId": "227e2628-20d2-4732-a064-dc70c3799c8a"
+			}
+		}
+	}
+}

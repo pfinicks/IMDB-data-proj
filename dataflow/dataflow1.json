@@ -1,0 +1,160 @@
+{
+	"name": "dataflow1",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "curr_ratings",
+						"type": "DatasetReference"
+					},
+					"name": "source1",
+					"description": "Import data from HTTP_sink"
+				},
+				{
+					"dataset": {
+						"referenceName": "prev_week_ratings",
+						"type": "DatasetReference"
+					},
+					"name": "source2"
+				},
+				{
+					"dataset": {
+						"referenceName": "titles",
+						"type": "DatasetReference"
+					},
+					"name": "source3"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "transform_sink",
+						"type": "DatasetReference"
+					},
+					"name": "sink1",
+					"description": "Export data to transform_sink"
+				}
+			],
+			"transformations": [
+				{
+					"name": "join1"
+				},
+				{
+					"name": "select1"
+				},
+				{
+					"name": "cast1"
+				},
+				{
+					"name": "derivedColumn1"
+				},
+				{
+					"name": "join2"
+				},
+				{
+					"name": "select2"
+				},
+				{
+					"name": "rank1"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          tconst as string,",
+				"          averageRating as string,",
+				"          numVotes as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false,",
+				"     format: 'parquet') ~> source1",
+				"source(output(",
+				"          tconst as string,",
+				"          averageRating as string,",
+				"          numVotes as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false,",
+				"     format: 'parquet') ~> source2",
+				"source(output(",
+				"          tconst as string,",
+				"          titleType as string,",
+				"          primaryTitle as string,",
+				"          originalTitle as string,",
+				"          isAdult as string,",
+				"          startYear as string,",
+				"          endYear as string,",
+				"          runtimeMinutes as string,",
+				"          genres as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false,",
+				"     format: 'parquet') ~> source3",
+				"source1, source2 join(source1@tconst == source2@tconst,",
+				"     joinType:'inner',",
+				"     matchType:'exact',",
+				"     ignoreSpaces: false,",
+				"     broadcast: 'auto')~> join1",
+				"join2 select(mapColumn(",
+				"          primaryTitle,",
+				"          averageRating = source1@averageRating,",
+				"          numVotes = source1@numVotes,",
+				"          pastweek_averageRating = source2@averageRating,",
+				"          pastweek_numVotes = source2@numVotes,",
+				"          originalTitle,",
+				"          genres,",
+				"          titleType,",
+				"          startYear",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select1",
+				"select1 cast(output(",
+				"          averageRating as float,",
+				"          numVotes as integer,",
+				"          pastweek_averageRating as float,",
+				"          pastweek_numVotes as integer",
+				"     ),",
+				"     errors: true) ~> cast1",
+				"cast1 derive(diff_ratings = averageRating-pastweek_averageRating,",
+				"          diff_vote = numVotes-pastweek_numVotes) ~> derivedColumn1",
+				"join1, source3 join(source1@tconst == source3@tconst,",
+				"     joinType:'inner',",
+				"     matchType:'exact',",
+				"     ignoreSpaces: false,",
+				"     broadcast: 'auto')~> join2",
+				"rank1 select(mapColumn(",
+				"          Position,",
+				"          Title = primaryTitle,",
+				"          Rating = averageRating,",
+				"          Votes_this_week = diff_vote,",
+				"          Total_votes = numVotes,",
+				"          Pastweek_rating = pastweek_averageRating,",
+				"          Pastweek_total_votes = pastweek_numVotes,",
+				"          original_Title = originalTitle,",
+				"          genres,",
+				"          Type = titleType,",
+				"          Year = startYear,",
+				"          diff_ratings",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select2",
+				"derivedColumn1 rank(desc(diff_vote, true),",
+				"     output(Position as long)) ~> rank1",
+				"select2 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     format: 'parquet',",
+				"     truncate: true,",
+				"     umask: 0022,",
+				"     preCommands: [],",
+				"     postCommands: [],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     partitionBy('hash', 1)) ~> sink1"
+			]
+		}
+	}
+}

@@ -1,0 +1,22 @@
+{
+	"name": "transform_sink",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "imdbprojectingest",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Parquet",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": "title.ratings.pqt",
+				"folderPath": "transformed",
+				"fileSystem": "imdbproject"
+			},
+			"compressionCodec": "snappy"
+		},
+		"schema": []
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}
