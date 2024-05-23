@@ -147,7 +147,7 @@
 				"select2 sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     format: 'parquet',",
-				"     filePattern:'concat(\\'Transformed\\', toString(currentTimestamp(),\\'yyyyMMddHHmmss\\'),\\'-[n].csv\\')',",
+				"     filePattern:'concat(\\'Transformed\\', toString(currentTimestamp(),\\'yyyyMMddHHmmss\\'),\\'-[n].pqt\\')',",
 				"     truncate: true,",
 				"     umask: 0022,",
 				"     preCommands: [],",
