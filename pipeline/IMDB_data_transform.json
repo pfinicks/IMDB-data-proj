@@ -48,7 +48,6 @@
 				"typeProperties": {
 					"method": "POST",
 					"url": "https://management.azure.com/subscriptions/5138f9ef-4e00-425f-a78f-bbba8bad5c22/resourceGroups/pfinicks_de_rg/providers/Microsoft.DataFactory/factories/pfinicks-df/pipelines/update_prev_data/createRun?api-version=2018-06-01",
-					"body": [],
 					"authentication": {
 						"resource": "https://management.azure.com",
 						"credential": {
