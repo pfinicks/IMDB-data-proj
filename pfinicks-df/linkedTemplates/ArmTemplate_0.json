@@ -823,7 +823,7 @@
 						"select2 sink(allowSchemaDrift: true,",
 						"     validateSchema: false,",
 						"     format: 'parquet',",
-						"     filePattern:(concat('Transformed', toString(currentTimestamp(),'yyyyMMddHHmmss'),'.pqt')),",
+						"     filePattern:(concat(toString(currentTimestamp(),'yyyyMMddHHmmss'),'.pqt')),",
 						"     truncate: true,",
 						"     umask: 0022,",
 						"     preCommands: [],",
